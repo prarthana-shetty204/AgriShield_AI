@@ -166,7 +166,7 @@ Backend-generated results can be mapped into the frontend diagnosis object and d
                     │      PDF Export      │
                     └──────────────────────┘
 
-```
+
 Diagnosis Workflow:
 
 
