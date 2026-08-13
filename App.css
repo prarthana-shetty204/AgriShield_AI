@@ -1,0 +1,2924 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+/* =========================================================
+   AGRISHIELD HERO BACKGROUND CAROUSEL
+   ========================================================= */
+
+.hero-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Individual background images */
+
+.hero-bg-slide {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  opacity: 0;
+
+  transform: scale(1.04);
+
+  transition:
+    opacity 1.5s ease-in-out,
+    transform 6s ease-out;
+}
+
+/* Active image */
+
+.hero-bg-slide.active {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   DARK OVERLAY
+   Keeps your text readable
+   ========================================================= */
+
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(1, 20, 14, 0.94) 0%,
+      rgba(1, 25, 17, 0.78) 35%,
+      rgba(1, 25, 17, 0.52) 65%,
+      rgba(1, 20, 14, 0.72) 100%
+    );
+
+  z-index: 2;
+}
+
+
+/* =========================================================
+   BOTTOM GREEN GRADIENT
+   Blends image into AgriShield dark theme
+   ========================================================= */
+
+.hero-bg-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 45%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(1, 20, 14, 0.35) 30%,
+      #011b12 100%
+    );
+
+  z-index: 3;
+}
+
+
+/* =========================================================
+   KEEP ALL WEBSITE CONTENT ABOVE BACKGROUND
+   ========================================================= */
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+
+/* Navbar */
+
+.navbar,
+.hero,
+.diagnosis-section {
+  position: relative;
+  z-index: 5;
+}
+
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.hero {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+}
+
+
+/* =========================================================
+   OPTIONAL CAROUSEL INDICATORS
+   ========================================================= */
+
+.hero-carousel-indicators {
+  position: absolute;
+
+  bottom: 35px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 8px;
+
+  z-index: 20;
+}
+
+.hero-carousel-indicator {
+  width: 28px;
+  height: 4px;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.25);
+
+  transition: all 0.4s ease;
+}
+
+.hero-carousel-indicator.active {
+  width: 48px;
+
+  background: #58ef88;
+
+  box-shadow:
+    0 0 12px rgba(88, 239, 136, 0.5);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #04120c;
+  font-family: "DM Sans", sans-serif;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  outline: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* =========================================================
+   MAIN APP
+========================================================= */
+
+.app {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible;
+
+  color: #f2fff5;
+
+  background:
+    radial-gradient(
+      circle at 72% 42%,
+      rgba(45, 196, 91, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 15% 80%,
+      rgba(37, 145, 75, 0.08),
+      transparent 25%
+    ),
+    linear-gradient(
+      135deg,
+      #03100b 0%,
+      #061810 48%,
+      #04110b 100%
+    );
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(95, 221, 124, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(95, 221, 124, 0.05) 1px,
+      transparent 1px
+    );
+
+  background-size: 70px 70px;
+
+  mask-image: linear-gradient(
+    to bottom,
+    black,
+    transparent 85%
+  );
+}
+
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-one {
+  width: 350px;
+  height: 350px;
+  background: rgba(46, 205, 93, 0.08);
+  top: 15%;
+  right: 12%;
+}
+
+.glow-two {
+  width: 250px;
+  height: 250px;
+  background: rgba(28, 119, 64, 0.08);
+  bottom: 5%;
+  left: 5%;
+}
+
+/* =========================================================
+   NAVBAR
+   CENTERED AGRISHIELD + LOGO
+========================================================= */
+
+.navbar {
+  height: 88px;
+  width: 100%;
+  padding: 0 5%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  z-index: 100;
+
+  border-bottom: 1px solid rgba(135, 226, 153, 0.08);
+
+  background: rgba(3, 16, 11, 0.82);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* CENTER BRAND */
+
+.brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  width: max-content;
+
+  text-align: center;
+
+  z-index: 101;
+}
+
+/* =========================================================
+   LOGO CONTAINER
+   THIS IS THE IMPORTANT FIX
+========================================================= */
+
+.brand-icon {
+  width: 46px !important;
+  height: 46px !important;
+
+  min-width: 46px;
+  min-height: 46px;
+
+  max-width: 46px;
+  max-height: 46px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden !important;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(79, 225, 117, 0.20),
+      rgba(18, 83, 43, 0.12)
+    );
+
+  border: 1px solid rgba(99, 230, 126, 0.25);
+
+  box-shadow:
+    0 0 25px rgba(67, 218, 105, 0.08),
+    inset 0 0 20px rgba(79, 225, 117, 0.04);
+}
+
+/* LOGO IMAGE */
+
+.brand-icon img {
+  width: 38px !important;
+  height: 38px !important;
+
+  min-width: 38px !important;
+  min-height: 38px !important;
+
+  max-width: 38px !important;
+  max-height: 38px !important;
+
+  display: block !important;
+
+  object-fit: contain !important;
+
+  object-position: center;
+
+  position: relative !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+
+  border: none !important;
+
+  flex-shrink: 0;
+}
+
+/* FALLBACK OLD ICON */
+
+.brand-icon span {
+  color: #6ee88c;
+  font-size: 25px;
+  line-height: 1;
+  transform: rotate(-25deg);
+}
+
+/* =========================================================
+   BRAND TEXT
+========================================================= */
+
+.brand > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.brand h2 {
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: 29px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.7px;
+
+  line-height: 1;
+
+  margin: 0;
+
+  color: #f2fff5;
+}
+
+.brand p {
+  margin: 5px 0 0;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.7px;
+
+  color: #6d8d77;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  width: 90%;
+  max-width: 1400px;
+
+  min-height: calc(100vh - 88px);
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns: 0.95fr 1.05fr;
+
+  align-items: center;
+
+  gap: 30px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+.hero-content {
+  text-align: center;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+/* =========================================================
+   EYEBROW
+========================================================= */
+
+.eyebrow {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 11px 16px;
+
+  border: 1px solid rgba(96, 225, 123, 0.18);
+
+  border-radius: 30px;
+
+  background: rgba(43, 154, 71, 0.08);
+
+  color: #73d88a;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.eyebrow span {
+  color: #83ee9b;
+
+  font-size: 16px;
+}
+
+/* =========================================================
+   HERO TITLE
+========================================================= */
+
+.hero h1 {
+  margin-top: 28px;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: clamp(72px, 7.5vw, 112px);
+
+  line-height: 0.88;
+
+  letter-spacing: -6px;
+
+  font-weight: 500;
+
+  text-align: center;
+}
+
+.hero h1 span {
+  display: block;
+
+  color: #65df84;
+
+  text-shadow:
+    0 0 40px rgba(70, 222, 105, 0.12);
+}
+
+/* =========================================================
+   HERO DESCRIPTION
+========================================================= */
+
+.hero-description {
+  max-width: 590px;
+
+  margin-top: 32px;
+
+  color: #849b8c;
+
+  font-size: 16px;
+
+  line-height: 1.8;
+
+  text-align: center;
+}
+
+/* =========================================================
+   DIAGNOSIS BUTTON
+========================================================= */
+
+.diagnosis-btn {
+  margin-top: 32px;
+
+  height: 60px;
+
+  padding: 0 23px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  color: #04120a;
+
+  background: #65e285;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 35px rgba(62, 218, 103, 0.18);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.diagnosis-btn:hover {
+  transform: translateY(-3px);
+
+  background: #7af198;
+
+  box-shadow:
+    0 15px 45px rgba(62, 218, 103, 0.3);
+}
+
+.scan-icon {
+  font-size: 22px;
+}
+
+.arrow {
+  font-size: 23px;
+
+  transition: transform 0.25s ease;
+}
+
+.diagnosis-btn:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* =========================================================
+   HERO VISUAL
+========================================================= */
+
+.hero-visual {
+  min-height: 600px;
+
+  display: grid;
+
+  place-items: center;
+
+  position: relative;
+}
+
+.radar {
+  width: min(570px, 45vw);
+
+  aspect-ratio: 1;
+
+  position: relative;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+}
+
+.ring {
+  position: absolute;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(81, 211, 108, 0.13);
+
+  box-shadow:
+    inset 0 0 50px rgba(53, 204, 89, 0.025);
+}
+
+.ring-1 {
+  width: 100%;
+  height: 100%;
+}
+
+.ring-2 {
+  width: 77%;
+  height: 77%;
+}
+
+.ring-3 {
+  width: 55%;
+  height: 55%;
+}
+
+.ring-4 {
+  width: 34%;
+  height: 34%;
+
+  border-color: rgba(83, 226, 112, 0.2);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(55, 213, 93, 0.08),
+      transparent 70%
+    );
+}
+
+/* =========================================================
+   RADAR LEAF
+========================================================= */
+
+.leaf-container {
+  width: 160px;
+  height: 160px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(80, 220, 111, 0.14),
+      rgba(45, 156, 73, 0.02) 65%,
+      transparent
+    );
+
+  box-shadow:
+    0 0 70px rgba(67, 220, 103, 0.08);
+
+  animation: floatLeaf 4s ease-in-out infinite;
+}
+
+.leaf {
+  display: none;
+}
+
+.leaf-line {
+  display: none;
+}
+
+@keyframes floatLeaf {
+  50% {
+    transform:
+      translateY(-10px)
+      scale(1.03);
+  }
+}
+
+/* =========================================================
+   SCAN
+========================================================= */
+
+.scan-line {
+  position: absolute;
+
+  width: 70%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(102, 231, 130, 0.55),
+      transparent
+    );
+
+  animation:
+    scanning 4s ease-in-out infinite;
+}
+
+@keyframes scanning {
+  0%,
+  100% {
+    transform: translateY(-130px);
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(130px);
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   VISUAL LABELS
+========================================================= */
+
+.visual-label {
+  position: absolute;
+
+  padding: 12px 15px;
+
+  border: 1px solid rgba(93, 214, 116, 0.13);
+
+  border-radius: 10px;
+
+  background: rgba(7, 27, 16, 0.7);
+
+  backdrop-filter: blur(15px);
+
+  color: #8caf99;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.5px;
+}
+
+.visual-label span {
+  margin-right: 8px;
+
+  color: #6fe58d;
+}
+
+.label-top {
+  top: 18%;
+  left: 5%;
+}
+
+.label-bottom {
+  right: 3%;
+  bottom: 20%;
+}
+
+.visual-caption {
+  position: absolute;
+
+  bottom: 6%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #587264;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #61de82;
+
+  box-shadow:
+    0 0 10px #61de82;
+}
+
+/* =========================================================
+   DIAGNOSIS SECTION
+========================================================= */
+
+.diagnosis-section {
+  position: relative;
+
+  z-index: 4;
+
+  min-height: 100vh;
+
+  padding: 110px 7% 120px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 15, 9, 0.2),
+      rgba(5, 20, 12, 0.95)
+    );
+
+  border-top:
+    1px solid rgba(104, 220, 125, 0.08);
+}
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+  max-width: 850px;
+
+  margin: 0 auto 55px;
+
+  text-align: center;
+}
+
+.section-tag {
+  display: inline-block;
+
+  color: #68dd87;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.section-heading h2 {
+  margin-top: 18px;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: clamp(40px, 4vw, 62px);
+
+  line-height: 1;
+
+  letter-spacing: -2.5px;
+
+  font-weight: 500;
+
+  color: #f2fff5;
+}
+
+.section-heading h2 span {
+  color: #63dd82;
+}
+
+.section-heading p {
+  max-width: 620px;
+
+  margin: 24px auto 0;
+
+  color: #718a79;
+
+  font-size: 15px;
+
+  line-height: 1.75;
+}
+
+/* =========================================================
+   UPLOAD CARD
+========================================================= */
+
+.diagnosis-card {
+  width: 100%;
+
+  max-width: 1050px;
+
+  margin: auto;
+
+  padding: 12px;
+
+  border-radius: 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 65, 37, 0.45),
+      rgba(7, 27, 16, 0.65)
+    );
+
+  border:
+    1px solid rgba(102, 220, 127, 0.12);
+
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.28);
+
+  backdrop-filter: blur(20px);
+}
+
+/* =========================================================
+   UPLOAD ZONE
+========================================================= */
+
+.upload-zone {
+  min-height: 430px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+    1px dashed rgba(100, 225, 128, 0.25);
+
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(61, 213, 97, 0.06),
+      transparent 60%
+    );
+
+  transition: 0.25s ease;
+}
+
+.upload-zone.dragging {
+  background:
+    rgba(57, 207, 94, 0.1);
+
+  border-color: #64e388;
+
+  transform: scale(0.99);
+}
+
+.upload-icon {
+  width: 78px;
+  height: 78px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 20px;
+
+  background:
+    rgba(76, 222, 109, 0.08);
+
+  border:
+    1px solid rgba(100, 226, 126, 0.18);
+
+  color: #70e990;
+
+  font-size: 36px;
+
+  margin-bottom: 25px;
+}
+
+.upload-zone h3 {
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: 26px;
+
+  font-weight: 500;
+
+  color: #effff2;
+}
+
+.upload-zone p {
+  margin-top: 9px;
+
+  color: #718878;
+
+  font-size: 14px;
+}
+
+.browse-btn {
+  margin-top: 25px;
+
+  padding: 14px 24px;
+
+  border-radius: 10px;
+
+  background: #63df83;
+
+  color: #06150c;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.browse-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px rgba(69, 221, 105, 0.2);
+}
+
+.upload-hint {
+  margin-top: 20px;
+
+  color: #4e6658;
+
+  font-size: 10px;
+
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+.preview-area {
+  min-height: 470px;
+
+  display: grid;
+
+  grid-template-columns: 0.95fr 1.05fr;
+
+  gap: 35px;
+
+  padding: 25px;
+}
+
+.image-preview {
+  position: relative;
+
+  min-height: 400px;
+
+  overflow: hidden;
+
+  border-radius: 17px;
+
+  background: #06150c;
+
+  border:
+    1px solid rgba(100, 225, 128, 0.12);
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+
+  min-height: 400px;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+
+  left: 15px;
+  bottom: 15px;
+
+  padding: 8px 11px;
+
+  border-radius: 7px;
+
+  background:
+    rgba(4, 19, 10, 0.82);
+
+  border:
+    1px solid rgba(103, 225, 127, 0.2);
+
+  color: #71df8b;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  backdrop-filter: blur(10px);
+}
+
+.preview-info {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.ready-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  width: fit-content;
+
+  padding: 8px 12px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(63, 208, 99, 0.07);
+
+  color: #67d984;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+}
+
+.ready-badge span,
+.complete-badge span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #62e483;
+
+  box-shadow:
+    0 0 8px #62e483;
+}
+
+.preview-info h3 {
+  margin-top: 22px;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: 34px;
+
+  font-weight: 500;
+
+  color: #effff2;
+}
+
+.file-name {
+  margin-top: 8px;
+
+  color: #61d67e;
+
+  font-size: 12px;
+}
+
+.preview-description {
+  max-width: 430px;
+
+  margin-top: 20px;
+
+  color: #708878;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+.preview-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.analyze-btn {
+  height: 52px;
+
+  padding: 0 21px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #63df83;
+
+  color: #06150b;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.analyze-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 30px rgba(74, 221, 106, 0.22);
+}
+
+.analyze-btn span {
+  font-size: 18px;
+}
+
+.change-btn {
+  height: 52px;
+
+  padding: 0 18px;
+
+  border-radius: 10px;
+
+  border:
+    1px solid rgba(105, 194, 124, 0.14);
+
+  background: transparent;
+
+  color: #799082;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.change-btn:hover {
+  border-color: rgba(105, 225, 124, 0.35);
+
+  color: #9bb9a4;
+}
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+.results-section {
+  max-width: 1050px;
+
+  margin: 80px auto 0;
+}
+
+.results-header {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  margin-bottom: 28px;
+}
+
+.results-header h2 {
+  margin-top: 12px;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: 40px;
+
+  font-weight: 500;
+
+  letter-spacing: -1.5px;
+
+  color: #effff2;
+}
+
+.results-header h2 span {
+  color: #63dd82;
+}
+
+.complete-badge {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 10px 14px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(69, 212, 101, 0.07);
+
+  color: #6cdb87;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.metrics-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 14px;
+}
+
+.metric-card {
+  min-height: 190px;
+
+  padding: 23px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 51, 29, 0.6),
+      rgba(7, 26, 15, 0.7)
+    );
+
+  border:
+    1px solid rgba(103, 210, 123, 0.1);
+
+  transition: 0.25s;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    rgba(103, 225, 127, 0.22);
+}
+
+.metric-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  color: #698171;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.metric-top span:last-child {
+  color: #67df87;
+}
+
+.metric-card strong {
+  display: block;
+
+  margin-top: 25px;
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: 38px;
+
+  font-weight: 500;
+
+  color: #effff2;
+}
+
+.metric-card p {
+  margin-top: 15px;
+
+  color: #647a6c;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+.progress {
+  width: 100%;
+
+  height: 5px;
+
+  margin-top: 14px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(118, 184, 132, 0.1);
+
+  overflow: hidden;
+}
+
+.progress div {
+  height: 100%;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #39b967,
+      #72ed91
+    );
+
+  box-shadow:
+    0 0 10px rgba(76, 223, 108, 0.3);
+}
+
+.health-card strong {
+  color: #71df8b;
+}
+
+/* =========================================================
+   EXPLAINABLE AI
+========================================================= */
+
+.explainable-section {
+  max-width: 1100px;
+
+  margin: 110px auto 0;
+
+  padding: 0 30px 120px;
+}
+
+.explainable-grid {
+  display: grid;
+
+  grid-template-columns: 1.15fr 0.85fr;
+
+  gap: 18px;
+}
+
+.explain-card {
+  padding: 30px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 50, 28, 0.72),
+      rgba(4, 22, 12, 0.82)
+    );
+
+  border:
+    1px solid rgba(95, 220, 119, 0.13);
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.18);
+
+  backdrop-filter: blur(20px);
+}
+
+.explain-card-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+}
+
+.mini-label {
+  display: block;
+
+  color: #65dd83;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+}
+
+.explain-card-header h3 {
+  margin-top: 8px;
+
+  color: #ecfff0;
+
+  font-size: 24px;
+
+  font-weight: 500;
+}
+
+.ai-badge {
+  padding: 8px 13px;
+
+  border-radius: 30px;
+
+  color: #6ce48a;
+
+  background:
+    rgba(75, 218, 104, 0.08);
+
+  border:
+    1px solid rgba(91, 222, 116, 0.14);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   DETECTION
+========================================================= */
+
+.detection-box {
+  display: flex;
+
+  gap: 15px;
+
+  margin-top: 28px;
+
+  padding: 18px;
+
+  border-radius: 15px;
+
+  background:
+    rgba(70, 210, 101, 0.055);
+
+  border:
+    1px solid rgba(91, 219, 112, 0.10);
+}
+
+.detection-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  color: #6ce28a;
+
+  background:
+    rgba(75, 216, 103, 0.11);
+
+  font-size: 18px;
+}
+
+.detection-box strong {
+  color: #e0ffe7;
+
+  font-size: 14px;
+}
+
+.detection-box p {
+  margin-top: 6px;
+
+  color: #728a7a;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   DECISION CARD
+========================================================= */
+
+.decision-card {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.decision-icon {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #6ce38a;
+
+  background:
+    rgba(75, 218, 104, 0.10);
+
+  border:
+    1px solid rgba(87, 220, 111, 0.14);
+
+  font-size: 15px;
+}
+
+.recommendation {
+  display: flex;
+
+  gap: 14px;
+
+  margin-top: 28px;
+
+  padding: 18px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(71, 214, 101, 0.09),
+      rgba(50, 140, 70, 0.035)
+    );
+
+  border:
+    1px solid rgba(85, 218, 109, 0.12);
+}
+
+.recommendation-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background:
+    rgba(79, 218, 105, 0.10);
+
+  font-size: 17px;
+}
+
+.recommendation strong {
+  color: #e2ffe8;
+
+  font-size: 14px;
+}
+
+.recommendation p {
+  margin-top: 7px;
+
+  color: #738b7b;
+
+  font-size: 10px;
+
+  line-height: 1.6;
+}
+
+/* =========================================================
+   DECISION ITEMS
+========================================================= */
+
+.decision-items {
+  margin-top: 24px;
+}
+
+.decision-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 13px 0;
+
+  border-bottom:
+    1px solid rgba(105, 190, 120, 0.07);
+}
+
+.decision-item:last-child {
+  border-bottom: none;
+}
+
+.decision-item span {
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  color: #62d47d;
+
+  background:
+    rgba(74, 211, 101, 0.07);
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.decision-item p {
+  color: #7b9181;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+/* =========================================================
+   CONFIDENCE
+========================================================= */
+
+.confidence-box {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: auto;
+
+  padding-top: 22px;
+
+  border-top:
+    1px solid rgba(105, 190, 120, 0.08);
+}
+
+.confidence-box small {
+  display: block;
+
+  color: #597161;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+}
+
+.confidence-box strong {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #6ce38a;
+
+  font-size: 28px;
+
+  font-weight: 500;
+}
+
+.confidence-circle {
+  width: 64px;
+  height: 64px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #72e991;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  border:
+    2px solid rgba(88, 221, 112, 0.20);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(73, 211, 102, 0.10),
+      transparent 70%
+    );
+
+  box-shadow:
+    0 0 28px rgba(67, 218, 99, 0.09);
+}
+
+/* =========================================================
+   CROP HEALTH CHART
+========================================================= */
+
+.crop-chart {
+  margin-top: 32px;
+
+  padding-top: 25px;
+
+  border-top:
+    1px solid rgba(105, 190, 120, 0.08);
+}
+
+.chart-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 18px;
+}
+
+.chart-header h4 {
+  margin-top: 7px;
+
+  color: #dff7e4;
+
+  font-size: 18px;
+
+  font-weight: 500;
+}
+
+.chart-unit {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 9px;
+
+  color: #6ee48a;
+
+  background:
+    rgba(76, 218, 105, 0.08);
+
+  border:
+    1px solid rgba(83, 220, 108, 0.13);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.chart-wrapper {
+  width: 100%;
+
+  overflow: hidden;
+
+  border-radius: 15px;
+
+  background:
+    rgba(0, 18, 9, 0.22);
+
+  border:
+    1px solid rgba(100, 190, 115, 0.06);
+}
+
+.health-chart {
+  display: block;
+
+  width: 100%;
+
+  height: 330px;
+}
+
+.chart-grid {
+  stroke:
+    rgba(154, 202, 163, 0.12);
+
+  stroke-width: 1;
+
+  stroke-dasharray: 4 5;
+}
+
+.chart-label {
+  fill: #617767;
+
+  font-size: 9px;
+
+  font-family: inherit;
+}
+
+.chart-x-label {
+  fill: #829888;
+
+  font-size: 9px;
+
+  font-family: inherit;
+}
+
+.risk-bar {
+  fill:
+    rgba(72, 206, 103, 0.72);
+
+  transition: opacity 0.3s ease;
+}
+
+.risk-bar:hover {
+  opacity: 0.85;
+}
+
+.severity-bar {
+  fill:
+    rgba(255, 177, 72, 0.72);
+
+  transition: opacity 0.3s ease;
+}
+
+.severity-bar:hover {
+  opacity: 0.9;
+}
+
+.health-line {
+  fill: none;
+
+  stroke: #63d77d;
+
+  stroke-width: 3;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+
+  filter:
+    drop-shadow(
+      0 0 5px rgba(85, 218, 111, 0.35)
+    );
+}
+
+.health-point {
+  fill: #63d77d;
+
+  stroke: #0a2915;
+
+  stroke-width: 3;
+}
+
+.confidence-line {
+  fill: none;
+
+  stroke: #f6bd4c;
+
+  stroke-width: 3;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+
+  filter:
+    drop-shadow(
+      0 0 5px rgba(246, 189, 76, 0.25)
+    );
+}
+
+.confidence-point {
+  fill: #f6bd4c;
+
+  stroke: #1d1707;
+
+  stroke-width: 3;
+}
+
+/* =========================================================
+   CHART LEGEND
+========================================================= */
+
+.chart-legend {
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 20px;
+
+  margin-top: 18px;
+}
+
+.legend-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #78907e;
+
+  font-size: 10px;
+}
+
+.legend-box {
+  width: 11px;
+  height: 7px;
+
+  display: inline-block;
+
+  border-radius: 2px;
+}
+
+.legend-box.risk {
+  background: #48ce67;
+}
+
+.legend-box.severity {
+  background: #ffb148;
+}
+
+.legend-line {
+  position: relative;
+
+  width: 17px;
+  height: 3px;
+
+  display: inline-block;
+
+  border-radius: 10px;
+}
+
+.legend-line.health {
+  background: #63d77d;
+}
+
+.legend-line.confidence {
+  background: #f6bd4c;
+}
+
+/* =========================================================
+   STATISTICAL REPORT
+========================================================= */
+
+.statistics-section {
+  padding: 100px 0 120px;
+}
+
+.statistics-section .section-heading {
+  text-align: center;
+
+  max-width: 720px;
+
+  margin: 0 auto 55px;
+}
+
+.statistics-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  padding: 26px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(8, 40, 22, 0.65);
+
+  border:
+    1px solid rgba(93, 211, 116, 0.12);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-4px);
+
+  border-color:
+    rgba(93, 211, 116, 0.35);
+}
+
+.stat-box span {
+  display: block;
+
+  color: #6e8875;
+
+  font-size: 10px;
+
+  letter-spacing: 1.5px;
+
+  margin-bottom: 12px;
+}
+
+.stat-box strong {
+  display: block;
+
+  color: #66df82;
+
+  font-size: 34px;
+
+  font-weight: 500;
+
+  margin-bottom: 7px;
+}
+
+.stat-box small {
+  color: #78917f;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   REPORT CARD
+========================================================= */
+
+.report-card {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 30px;
+
+  padding: 32px;
+
+  margin-bottom: 20px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(12, 55, 30, 0.8),
+      rgba(5, 27, 15, 0.75)
+    );
+
+  border:
+    1px solid rgba(96, 216, 119, 0.14);
+}
+
+.report-card h3 {
+  margin: 8px 0 10px;
+
+  color: #e5f8e8;
+
+  font-size: 22px;
+
+  font-weight: 500;
+}
+
+.report-card p {
+  max-width: 750px;
+
+  margin: 0;
+
+  color: #7e9885;
+
+  font-size: 13px;
+
+  line-height: 1.8;
+}
+
+.report-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  align-self: flex-start;
+
+  padding: 9px 13px;
+
+  border-radius: 20px;
+
+  white-space: nowrap;
+
+  color: #67df82;
+
+  background:
+    rgba(67, 211, 99, 0.07);
+
+  border:
+    1px solid rgba(67, 211, 99, 0.12);
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+.download-report {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 30px;
+
+  padding: 28px 32px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(6, 32, 17, 0.8);
+
+  border:
+    1px solid rgba(96, 216, 119, 0.1);
+}
+
+.download-report h3 {
+  margin: 7px 0;
+
+  color: #e4f8e8;
+
+  font-size: 20px;
+
+  font-weight: 500;
+}
+
+.download-report p {
+  margin: 0;
+
+  color: #718a79;
+
+  font-size: 12px;
+}
+
+.download-btn {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 15px 23px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #65dc80;
+
+  color: #06200e;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 25px rgba(70, 218, 102, 0.18);
+}
+
+.download-btn span {
+  font-size: 19px;
+
+  line-height: 1;
+}
+
+/* =========================================================
+   EXTRA SAFETY:
+   PREVENT ANY ACCIDENTAL FULL-SCREEN LOGO IMAGE
+========================================================= */
+
+/*
+   If an image was accidentally inserted directly inside
+   .app, this keeps it from covering the whole page.
+*/
+
+.app > img {
+  max-width: 46px !important;
+  max-height: 46px !important;
+
+  width: 46px !important;
+  height: 46px !important;
+
+  object-fit: contain !important;
+
+  position: relative !important;
+
+  display: block !important;
+}
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .hero {
+    grid-template-columns: 1fr;
+
+    text-align: center;
+  }
+
+  .hero-content {
+    padding-left: 0;
+  }
+
+  .hero-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .eyebrow {
+    margin: auto;
+  }
+
+  .trust-row {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    min-height: 500px;
+  }
+
+  .radar {
+    width: min(500px, 75vw);
+  }
+
+  .preview-area {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statistics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 800px
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .explainable-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .explainable-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .report-card {
+    flex-direction: column;
+  }
+
+  .download-report {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .navbar {
+    height: 78px;
+
+    padding: 0 20px;
+  }
+
+  .brand {
+    gap: 9px;
+  }
+
+  .brand-icon {
+    width: 40px !important;
+    height: 40px !important;
+
+    min-width: 40px;
+    min-height: 40px;
+
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .brand-icon img {
+    width: 33px !important;
+    height: 33px !important;
+
+    min-width: 33px !important;
+    min-height: 33px !important;
+
+    max-width: 33px !important;
+    max-height: 33px !important;
+  }
+
+  .brand h2 {
+    font-size: 24px;
+  }
+
+  .brand p {
+    font-size: 8px;
+
+    letter-spacing: 1.3px;
+  }
+
+  .hero {
+    width: 92%;
+  }
+
+  .hero h1 {
+    font-size: 65px;
+
+    letter-spacing: -4px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .trust-row {
+    flex-direction: column;
+
+    gap: 14px;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .hero-visual {
+    min-height: 390px;
+  }
+
+  .radar {
+    width: 330px;
+  }
+
+  .leaf-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130px;
+  height: 130px;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 10;
+
+  pointer-events: none;
+}
+.hero-leaf-logo {
+  width: 85px;
+  height: 85px;
+
+  object-fit: contain;
+
+  display: block;
+
+  /* prevents the image from becoming a background */
+  position: relative;
+
+  /* optional glow */
+  filter:
+    drop-shadow(0 0 8px rgba(80, 255, 130, 0.45))
+    drop-shadow(0 0 18px rgba(80, 255, 130, 0.25));
+}
+
+  .visual-label {
+    font-size: 8px;
+  }
+
+  .label-top {
+    left: 0;
+  }
+
+  .label-bottom {
+    right: 0;
+  }
+
+  .diagnosis-section {
+    padding: 80px 5%;
+  }
+
+  .section-heading h2 {
+    font-size: 40px;
+
+    letter-spacing: -1.8px;
+  }
+
+  .section-heading p {
+    font-size: 14px;
+  }
+
+  .preview-area {
+    padding: 12px;
+  }
+
+  .preview-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .results-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .health-chart {
+    height: 280px;
+  }
+
+  .chart-legend {
+    gap: 12px;
+  }
+
+  .legend-item {
+    font-size: 8px;
+  }
+
+  .report-card {
+    padding: 24px;
+  }
+
+  .download-report {
+    padding: 24px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .brand h2 {
+    font-size: 21px;
+  }
+
+  .brand p {
+    font-size: 7px;
+  }
+
+  .brand-icon {
+    width: 36px !important;
+    height: 36px !important;
+
+    min-width: 36px;
+    min-height: 36px;
+
+    max-width: 36px;
+    max-height: 36px;
+  }
+
+  .brand-icon img {
+    width: 30px !important;
+    height: 30px !important;
+
+    min-width: 30px !important;
+    min-height: 30px !important;
+
+    max-width: 30px !important;
+    max-height: 30px !important;
+  }
+
+  .hero h1 {
+    font-size: 54px;
+
+    letter-spacing: -3px;
+  }
+
+  .diagnosis-btn {
+    height: 54px;
+
+    font-size: 12px;
+  }
+
+  .upload-zone h3 {
+    font-size: 22px;
+  }
+
+  .preview-info h3 {
+    font-size: 28px;
+  }
+}
+/* =====================================================
+   AGRISHIELD LEAF LOGO - RADAR CENTER
+   ===================================================== */
+
+.radar {
+  position: relative;
+}
+
+.radar .leaf-container {
+  position: absolute !important;
+
+  top: 50% !important;
+  left: 50% !important;
+
+  width: 120px !important;
+  height: 120px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  z-index: 50 !important;
+
+  pointer-events: none;
+}
+
+.radar .hero-leaf-logo {
+  display: block !important;
+
+  width: 85px !important;
+  height: 85px !important;
+
+  max-width: 85px !important;
+  max-height: 85px !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  object-fit: contain !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  position: relative !important;
+
+  z-index: 51 !important;
+
+  filter:
+    drop-shadow(0 0 8px rgba(70, 255, 120, 0.55))
+    drop-shadow(0 0 18px rgba(70, 255, 120, 0.30)) !important;
+}
+
+/* Disable the OLD CSS leaf */
+.radar .leaf,
+.radar .leaf-line {
+  display: none !important;
+}
+/* =========================================================
+   GLOBAL TYPOGRAPHY FIX
+   ========================================================= */
+
+html,
+body,
+#root {
+  color: #f1fff5;
+}
+
+/* Main body text */
+p {
+  color: #b9d8c3;
+}
+
+/* Strong / important text */
+strong,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #f1fff5;
+}
+
+/* Secondary / descriptive text */
+small {
+  color: #a8cbb4;
+}
+
+/* Labels */
+span {
+  color: inherit;
+}
+
+/* =========================================================
+   CARDS & CONTENT
+   ========================================================= */
+
+.explain-card p,
+.decision-card p,
+.detection-box p,
+.recommendation p,
+.decision-item p,
+.preview-description,
+.file-name,
+.hero-description,
+.section-heading p,
+.metric-card p,
+.stat-box small,
+.report-card p,
+.download-report p {
+  color: #b9d8c3 !important;
+}
+
+/* Action item text */
+.decision-item p {
+  color: #c5dfcc !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+/* Recommendation description */
+.recommendation p {
+  color: #b9d8c3 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Main recommendation heading */
+.recommendation strong {
+  color: #f1fff5 !important;
+  font-size: 17px !important;
+}
+
+/* Card headings */
+.explain-card h3,
+.report-card h3,
+.download-report h3,
+.metric-card strong,
+.stat-box strong {
+  color: #f1fff5 !important;
+}
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.mini-label,
+.section-tag,
+.metric-top span,
+.stat-box > span {
+  color: #79d996 !important;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+button {
+  color: #f1fff5;
+}
+
+/* =========================================================
+   CONFIDENCE / STATUS
+   ========================================================= */
+
+.confidence-box small {
+  color: #8fc9a0 !important;
+}
+
+.confidence-box strong {
+  color: #f1fff5 !important;
+}
+
+.report-status {
+  color: #a9d5b4 !important;
+}
+
+/* =========================================================
+   FILE / UPLOAD TEXT
+   ========================================================= */
+
+.upload-zone h3,
+.preview-info h3 {
+  color: #f1fff5 !important;
+}
+
+.upload-zone p,
+.upload-hint {
+  color: #b9d8c3 !important;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.brand h2 {
+  color: #f1fff5 !important;
+}
+
+.brand p {
+  color: #79d996 !important;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero h1 {
+  color: #f1fff5 !important;
+}
+
+.hero-description {
+  color: #b9d8c3 !important;
+}
+
+.eyebrow {
+  color: #79d996 !important;
+}
+
+/* =========================================================
+   BETTER GLOBAL FONT SIZE
+   ========================================================= */
+
+body {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+h1 {
+  line-height: 1.1;
+}
+
+h2 {
+  line-height: 1.2;
+}
+
+h3 {
+  line-height: 1.3;
+}
