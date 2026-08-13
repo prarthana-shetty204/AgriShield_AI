@@ -1,0 +1,10 @@
+                  precision    recall  f1-score   support
+
+bacterial_blight     0.9787    1.0000    0.9892        46
+      curl_virus     1.0000    1.0000    1.0000        43
+  fussarium_wilt     0.9767    0.9767    0.9767        43
+         healthy     1.0000    0.9773    0.9885        44
+
+        accuracy                         0.9886       176
+       macro avg     0.9889    0.9885    0.9886       176
+    weighted avg     0.9888    0.9886    0.9886       176

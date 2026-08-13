@@ -1,0 +1,32 @@
+@"
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+
+# Backend
+Backend/venv/
+Backend/__pycache__/
+Backend/*.pyc
+
+# AI/ML virtual environment
+AgriShield_AI/AI_ML/venv/
+
+# AI/ML datasets
+AgriShield_AI/AI_ML/dataset/
+AgriShield_AI/AI_ML/datasets/
+
+# AI/ML model files
+AgriShield_AI/AI_ML/models/*.keras
+AgriShield_AI/AI_ML/models/*.h5
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+*.env
+
+# VS Code
+.vscode/
+"@ | Set-Content .gitignore
