@@ -2,8 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import jsPDF from "jspdf";
 
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
 function App() {
-    // =========================
+  // =========================
   // HERO BACKGROUND CAROUSEL
   // =========================
 
@@ -24,12 +37,19 @@ function App() {
 
     return () => clearInterval(interval);
   }, []);
+
   const diagnosisRef = useRef(null);
 
+  // =========================
+  // STATES
+  // =========================
+
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [analysis, setAnalysis] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // =========================
   // IMAGE UPLOAD
@@ -45,7 +65,13 @@ function App() {
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Please upload an image smaller than 10MB.");
+      return;
+    }
+
     setFileName(file.name);
+    setSelectedFile(file);
     setSelectedImage(URL.createObjectURL(file));
     setAnalysis(null);
   };
@@ -62,10 +88,17 @@ function App() {
     const file = e.dataTransfer.files[0];
 
     if (!file || !file.type.startsWith("image/")) {
+      alert("Please drop a valid image file.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Please upload an image smaller than 10MB.");
       return;
     }
 
     setFileName(file.name);
+    setSelectedFile(file);
     setSelectedImage(URL.createObjectURL(file));
     setAnalysis(null);
   };
@@ -76,32 +109,63 @@ function App() {
 
   const resetUpload = () => {
     setSelectedImage(null);
+    setSelectedFile(null);
     setFileName("");
     setAnalysis(null);
   };
 
   // =========================
-  // DEMO AI ANALYSIS
+  // FASTAPI AI ANALYSIS
   // =========================
 
-  const analyzeCrop = () => {
-    if (!selectedImage) return;
+  const analyzeCrop = async () => {
+    if (!selectedFile) {
+      alert("Please upload a crop image first.");
+      return;
+    }
 
-    setAnalysis({
-      risk: 27,
-      severity: 18,
-      health: 82,
-      confidence: 94,
-    });
+    setIsAnalyzing(true);
 
-    setTimeout(() => {
-      document
-        .querySelector(".results-section")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-    }, 150);
+    try {
+      const formData = new FormData();
+
+      formData.append("file", selectedFile);
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/analyze",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Backend request failed");
+      }
+
+      const data = await response.json();
+
+      console.log("FastAPI Response:", data);
+
+      setAnalysis(data);
+
+      setTimeout(() => {
+        document
+          .querySelector(".results-section")
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+      }, 150);
+    } catch (error) {
+      console.error("Backend connection error:", error);
+
+      alert(
+        "Unable to connect to AgriShield AI backend. Make sure FastAPI is running on port 8000."
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // =========================
@@ -114,6 +178,43 @@ function App() {
       block: "start",
     });
   };
+
+  // =========================
+  // RECHARTS DATA
+  // =========================
+
+  const chartData = analysis
+    ? [
+        {
+          feature: "Leaf Color",
+          risk: 27,
+          severity: 18,
+          health: analysis.health,
+          confidence: analysis.confidence,
+        },
+        {
+          feature: "Surface",
+          risk: 22,
+          severity: 22,
+          health: Math.max(0, analysis.health - 4),
+          confidence: Math.max(0, analysis.confidence - 3),
+        },
+        {
+          feature: "Leaf Edge",
+          risk: 15,
+          severity: 12,
+          health: Math.min(100, analysis.health + 5),
+          confidence: Math.min(100, analysis.confidence + 2),
+        },
+        {
+          feature: "Structure",
+          risk: 10,
+          severity: 8,
+          health: Math.max(0, analysis.health - 2),
+          confidence: Math.max(0, analysis.confidence - 1),
+        },
+      ]
+    : [];
 
   // =========================
   // DOWNLOAD PDF
@@ -132,18 +233,10 @@ function App() {
     const health = analysis.health ?? 0;
     const confidence = analysis.confidence ?? 0;
 
-    /* =============================== */
-    /* HEADER */
-    /* =============================== */
-
     pdf.setFontSize(22);
     pdf.setTextColor(30, 110, 55);
 
-    pdf.text(
-      "AgriShield AI",
-      20,
-      25
-    );
+    pdf.text("AgriShield AI", 20, 25);
 
     pdf.setFontSize(11);
     pdf.setTextColor(100, 100, 100);
@@ -154,31 +247,14 @@ function App() {
       33
     );
 
-    /* =============================== */
-    /* LINE */
-    /* =============================== */
-
     pdf.setDrawColor(100, 190, 120);
 
-    pdf.line(
-      20,
-      40,
-      190,
-      40
-    );
-
-    /* =============================== */
-    /* DIAGNOSIS */
-    /* =============================== */
+    pdf.line(20, 40, 190, 40);
 
     pdf.setFontSize(16);
     pdf.setTextColor(30, 30, 30);
 
-    pdf.text(
-      "Final AI Diagnosis",
-      20,
-      55
-    );
+    pdf.text("Final AI Diagnosis", 20, 55);
 
     pdf.setFontSize(12);
     pdf.setTextColor(70, 70, 70);
@@ -189,58 +265,23 @@ function App() {
       65
     );
 
-    /* =============================== */
-    /* STATISTICS */
-    /* =============================== */
-
     pdf.setFontSize(15);
     pdf.setTextColor(30, 110, 55);
 
-    pdf.text(
-      "Statistical Results",
-      20,
-      85
-    );
+    pdf.text("Statistical Results", 20, 85);
 
     pdf.setFontSize(12);
     pdf.setTextColor(50, 50, 50);
 
-    pdf.text(
-      `Risk Level: ${risk}%`,
-      25,
-      98
-    );
-
-    pdf.text(
-      `Severity: ${severity}%`,
-      25,
-      110
-    );
-
-    pdf.text(
-      `Crop Health: ${health}%`,
-      25,
-      122
-    );
-
-    pdf.text(
-      `AI Confidence: ${confidence}%`,
-      25,
-      134
-    );
-
-    /* =============================== */
-    /* VISUAL RESULT */
-    /* =============================== */
+    pdf.text(`Risk Level: ${risk}%`, 25, 98);
+    pdf.text(`Severity: ${severity}%`, 25, 110);
+    pdf.text(`Crop Health: ${health}%`, 25, 122);
+    pdf.text(`AI Confidence: ${confidence}%`, 25, 134);
 
     pdf.setFontSize(15);
     pdf.setTextColor(30, 110, 55);
 
-    pdf.text(
-      "Diagnosis Summary",
-      20,
-      155
-    );
+    pdf.text("Diagnosis Summary", 20, 155);
 
     pdf.setFontSize(11);
     pdf.setTextColor(70, 70, 70);
@@ -251,25 +292,12 @@ function App() {
       "The AI system analyzed the uploaded crop image and generated the above health assessment.";
 
     const wrappedSummary =
-      pdf.splitTextToSize(
-        summary,
-        165
-      );
+      pdf.splitTextToSize(summary, 165);
 
-    pdf.text(
-      wrappedSummary,
-      20,
-      167
-    );
-
-    /* =============================== */
-    /* RECOMMENDATION */
-    /* =============================== */
+    pdf.text(wrappedSummary, 20, 167);
 
     const recommendationY =
-      167 +
-      wrappedSummary.length * 6 +
-      15;
+      167 + wrappedSummary.length * 6 + 15;
 
     pdf.setFontSize(15);
     pdf.setTextColor(30, 110, 55);
@@ -299,10 +327,6 @@ function App() {
       recommendationY + 12
     );
 
-    /* =============================== */
-    /* FOOTER */
-    /* =============================== */
-
     pdf.setFontSize(9);
     pdf.setTextColor(130, 130, 130);
 
@@ -318,10 +342,6 @@ function App() {
       285
     );
 
-    /* =============================== */
-    /* DOWNLOAD */
-    /* =============================== */
-
     pdf.save(
       "AgriShield-Crop-Diagnostic-Report.pdf"
     );
@@ -331,32 +351,30 @@ function App() {
     <div className="app">
 
       {/* ========================= */}
-      {/* BACKGROUND */}
+      {/* HERO BACKGROUND */}
       {/* ========================= */}
 
-      {/* ========================= */}
-{/* HERO BACKGROUND CAROUSEL */}
-{/* ========================= */}
+      <div className="hero-background">
 
-<div className="hero-background">
+        {heroImages.map((image, index) => (
+          <div
+            key={image}
+            className={`hero-bg-slide ${
+              index === currentBackground
+                ? "active"
+                : ""
+            }`}
+            style={{
+              backgroundImage: `url(${image})`,
+            }}
+          />
+        ))}
 
-  {heroImages.map((image, index) => (
-    <div
-      key={image}
-      className={`hero-bg-slide ${
-        index === currentBackground ? "active" : ""
-      }`}
-      style={{
-        backgroundImage: `url(${image})`,
-      }}
-    />
-  ))}
+        <div className="hero-bg-overlay"></div>
 
-  <div className="hero-bg-overlay"></div>
+        <div className="hero-bg-gradient"></div>
 
-  <div className="hero-bg-gradient"></div>
-
-</div>
+      </div>
 
       {/* ========================= */}
       {/* NAVBAR */}
@@ -366,7 +384,6 @@ function App() {
 
         <div className="brand">
 
-          {/* AGRISHIELD LOGO */}
           <div className="brand-icon">
             <img
               src="/agrishield-leaf.png"
@@ -374,7 +391,6 @@ function App() {
             />
           </div>
 
-          {/* TITLE */}
           <div className="brand-text">
             <h2>AgriShield</h2>
             <p>AI CROP INTELLIGENCE</p>
@@ -385,7 +401,7 @@ function App() {
       </header>
 
       {/* ========================= */}
-      {/* HOME / HERO */}
+      {/* HERO */}
       {/* ========================= */}
 
       <main className="hero">
@@ -405,8 +421,9 @@ function App() {
 
           <p className="hero-description">
             AgriShield AI transforms a simple crop image into an
-            understandable health assessment — helping identify issues,
-            estimate severity, flag risk and support better decisions.
+            understandable health assessment — helping identify
+            issues, estimate severity, flag risk and support
+            better decisions.
           </p>
 
           <button
@@ -428,13 +445,9 @@ function App() {
 
         </section>
 
-        {/* ========================= */}
         {/* HERO VISUAL */}
-        {/* ========================= */}
 
         <section className="hero-visual">
-
-          
 
           <div className="radar">
 
@@ -442,8 +455,6 @@ function App() {
             <div className="ring ring-2"></div>
             <div className="ring ring-3"></div>
             <div className="ring ring-4"></div>
-
-            
 
             <div className="scan-line"></div>
 
@@ -481,9 +492,9 @@ function App() {
           </h2>
 
           <p>
-            Upload a clear image of your cotton crop and AgriShield
-            will analyze its health, identify possible risks and
-            estimate disease severity.
+            Upload a clear image of your cotton crop and
+            AgriShield will analyze its health, identify
+            possible risks and estimate disease severity.
           </p>
 
         </div>
@@ -500,16 +511,13 @@ function App() {
               className={`upload-zone ${
                 isDragging ? "dragging" : ""
               }`}
-
               onDragOver={(e) => {
                 e.preventDefault();
                 setIsDragging(true);
               }}
-
               onDragLeave={() => {
                 setIsDragging(false);
               }}
-
               onDrop={handleDrop}
             >
 
@@ -548,8 +556,6 @@ function App() {
 
             <div className="preview-area">
 
-              {/* IMAGE */}
-
               <div className="image-preview">
 
                 <img
@@ -562,8 +568,6 @@ function App() {
                 </div>
 
               </div>
-
-              {/* IMAGE INFORMATION */}
 
               <div className="preview-info">
 
@@ -594,17 +598,21 @@ function App() {
                   <button
                     className="analyze-btn"
                     onClick={analyzeCrop}
+                    disabled={isAnalyzing}
                   >
 
                     <span>✦</span>
 
-                    Analyze Crop
+                    {isAnalyzing
+                      ? "Analyzing..."
+                      : "Analyze Crop"}
 
                   </button>
 
                   <button
                     className="change-btn"
                     onClick={resetUpload}
+                    disabled={isAnalyzing}
                   >
 
                     Change Image
@@ -663,15 +671,8 @@ function App() {
               <div className="metric-card">
 
                 <div className="metric-top">
-
-                  <span>
-                    RISK LEVEL
-                  </span>
-
-                  <span>
-                    AI
-                  </span>
-
+                  <span>RISK LEVEL</span>
+                  <span>AI</span>
                 </div>
 
                 <strong>
@@ -699,15 +700,8 @@ function App() {
               <div className="metric-card">
 
                 <div className="metric-top">
-
-                  <span>
-                    SEVERITY
-                  </span>
-
-                  <span>
-                    AI
-                  </span>
-
+                  <span>SEVERITY</span>
+                  <span>AI</span>
                 </div>
 
                 <strong>
@@ -735,15 +729,8 @@ function App() {
               <div className="metric-card health-card">
 
                 <div className="metric-top">
-
-                  <span>
-                    CROP HEALTH
-                  </span>
-
-                  <span>
-                    AI
-                  </span>
-
+                  <span>CROP HEALTH</span>
+                  <span>AI</span>
                 </div>
 
                 <strong>
@@ -771,15 +758,8 @@ function App() {
               <div className="metric-card">
 
                 <div className="metric-top">
-
-                  <span>
-                    CONFIDENCE
-                  </span>
-
-                  <span>
-                    AI
-                  </span>
-
+                  <span>CONFIDENCE</span>
+                  <span>AI</span>
                 </div>
 
                 <strong>
@@ -809,14 +789,12 @@ function App() {
         )}
 
         {/* ================================================= */}
-        {/* STEP 02 — EXPLAINABLE AI */}
+        {/* EXPLAINABLE AI */}
         {/* ================================================= */}
 
         {analysis && (
 
           <section className="explainable-section">
-
-            {/* SECTION HEADER */}
 
             <div className="section-heading">
 
@@ -833,13 +811,11 @@ function App() {
 
             </div>
 
-            {/* EXPLAINABLE AI GRID */}
-
             <div className="explainable-grid">
 
-              {/* ========================================= */}
+              {/* ========================= */}
               {/* AI OBSERVATION */}
-              {/* ========================================= */}
+              {/* ========================= */}
 
               <div className="explain-card">
 
@@ -863,8 +839,6 @@ function App() {
 
                 </div>
 
-                {/* DETECTION */}
-
                 <div className="detection-box">
 
                   <div className="detection-icon">
@@ -886,7 +860,9 @@ function App() {
 
                 </div>
 
-                {/* CROP HEALTH GRAPH */}
+                {/* ========================= */}
+                {/* RECHARTS */}
+                {/* ========================= */}
 
                 <div className="crop-chart">
 
@@ -910,299 +886,148 @@ function App() {
 
                   </div>
 
-                  {/* GRAPH */}
+                  <div
+                    className="chart-wrapper"
+                    style={{
+                      width: "100%",
+                      height: "380px",
+                    }}
+                  >
 
-                  <div className="chart-wrapper">
-
-                    <svg
-                      viewBox="0 0 760 360"
-                      className="health-chart"
-                      preserveAspectRatio="none"
+                    <ResponsiveContainer
+                      width="100%"
+                      height="100%"
                     >
 
-                      {/* GRID LINES */}
-
-                      <line
-                        x1="65"
-                        y1="35"
-                        x2="730"
-                        y2="35"
-                        className="chart-grid"
-                      />
-
-                      <line
-                        x1="65"
-                        y1="95"
-                        x2="730"
-                        y2="95"
-                        className="chart-grid"
-                      />
-
-                      <line
-                        x1="65"
-                        y1="155"
-                        x2="730"
-                        y2="155"
-                        className="chart-grid"
-                      />
-
-                      <line
-                        x1="65"
-                        y1="215"
-                        x2="730"
-                        y2="215"
-                        className="chart-grid"
-                      />
-
-                      <line
-                        x1="65"
-                        y1="275"
-                        x2="730"
-                        y2="275"
-                        className="chart-grid"
-                      />
-
-                      {/* Y AXIS LABELS */}
-
-                      <text
-                        x="28"
-                        y="40"
-                        className="chart-label"
+                      <BarChart
+                        data={chartData}
+                        margin={{
+                          top: 20,
+                          right: 20,
+                          left: 0,
+                          bottom: 20,
+                        }}
                       >
-                        100%
-                      </text>
 
-                      <text
-                        x="38"
-                        y="100"
-                        className="chart-label"
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                          dataKey="feature"
+                        />
+
+                        <YAxis
+                          domain={[0, 100]}
+                          tickFormatter={(value) =>
+                            `${value}%`
+                          }
+                        />
+
+                        <Tooltip
+                          formatter={(value) =>
+                            `${value}%`
+                          }
+                        />
+
+                        <Legend />
+
+                        <Bar
+                          dataKey="risk"
+                          name="Risk Contribution"
+                          fill="#ef4444"
+                          radius={[5, 5, 0, 0]}
+                        />
+
+                        <Bar
+                          dataKey="severity"
+                          name="Severity Impact"
+                          fill="#f59e0b"
+                          radius={[5, 5, 0, 0]}
+                        />
+
+                      </BarChart>
+
+                    </ResponsiveContainer>
+
+                  </div>
+
+                  {/* ========================= */}
+                  {/* HEALTH + CONFIDENCE */}
+                  {/* ========================= */}
+
+                  <div
+                    className="chart-wrapper"
+                    style={{
+                      width: "100%",
+                      height: "320px",
+                      marginTop: "30px",
+                    }}
+                  >
+
+                    <ResponsiveContainer
+                      width="100%"
+                      height="100%"
+                    >
+
+                      <LineChart
+                        data={chartData}
+                        margin={{
+                          top: 20,
+                          right: 20,
+                          left: 0,
+                          bottom: 20,
+                        }}
                       >
-                        75%
-                      </text>
 
-                      <text
-                        x="38"
-                        y="160"
-                        className="chart-label"
-                      >
-                        50%
-                      </text>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                        />
 
-                      <text
-                        x="38"
-                        y="220"
-                        className="chart-label"
-                      >
-                        25%
-                      </text>
+                        <XAxis
+                          dataKey="feature"
+                        />
 
-                      <text
-                        x="48"
-                        y="280"
-                        className="chart-label"
-                      >
-                        0%
-                      </text>
+                        <YAxis
+                          domain={[0, 100]}
+                          tickFormatter={(value) =>
+                            `${value}%`
+                          }
+                        />
 
-                      {/* RISK BARS */}
+                        <Tooltip
+                          formatter={(value) =>
+                            `${value}%`
+                          }
+                        />
 
-                      <rect
-                        x="105"
-                        y="184"
-                        width="38"
-                        height="91"
-                        rx="4"
-                        className="risk-bar"
-                      />
+                        <Legend />
 
-                      <rect
-                        x="265"
-                        y="200"
-                        width="38"
-                        height="75"
-                        rx="4"
-                        className="risk-bar"
-                      />
+                        <Line
+                          type="monotone"
+                          dataKey="health"
+                          name="Crop Health"
+                          stroke="#16a34a"
+                          strokeWidth={3}
+                          dot={{
+                            r: 5,
+                          }}
+                        />
 
-                      <rect
-                        x="425"
-                        y="232"
-                        width="38"
-                        height="43"
-                        rx="4"
-                        className="risk-bar"
-                      />
+                        <Line
+                          type="monotone"
+                          dataKey="confidence"
+                          name="AI Confidence"
+                          stroke="#2563eb"
+                          strokeWidth={3}
+                          dot={{
+                            r: 5,
+                          }}
+                        />
 
-                      <rect
-                        x="585"
-                        y="244"
-                        width="38"
-                        height="31"
-                        rx="4"
-                        className="risk-bar"
-                      />
+                      </LineChart>
 
-                      {/* SEVERITY BARS */}
-
-                      <rect
-                        x="148"
-                        y="232"
-                        width="38"
-                        height="43"
-                        rx="4"
-                        className="severity-bar"
-                      />
-
-                      <rect
-                        x="308"
-                        y="222"
-                        width="38"
-                        height="53"
-                        rx="4"
-                        className="severity-bar"
-                      />
-
-                      <rect
-                        x="468"
-                        y="250"
-                        width="38"
-                        height="25"
-                        rx="4"
-                        className="severity-bar"
-                      />
-
-                      <rect
-                        x="628"
-                        y="258"
-                        width="38"
-                        height="17"
-                        rx="4"
-                        className="severity-bar"
-                      />
-
-                      {/* HEALTH LINE */}
-
-                      <polyline
-                        points="
-                          124,79
-                          284,88
-                          444,60
-                          604,72
-                        "
-                        className="health-line"
-                      />
-
-                      {/* HEALTH POINTS */}
-
-                      <circle
-                        cx="124"
-                        cy="79"
-                        r="5"
-                        className="health-point"
-                      />
-
-                      <circle
-                        cx="284"
-                        cy="88"
-                        r="5"
-                        className="health-point"
-                      />
-
-                      <circle
-                        cx="444"
-                        cy="60"
-                        r="5"
-                        className="health-point"
-                      />
-
-                      <circle
-                        cx="604"
-                        cy="72"
-                        r="5"
-                        className="health-point"
-                      />
-
-                      {/* CONFIDENCE LINE */}
-
-                      <polyline
-                        points="
-                          124,54
-                          284,65
-                          444,43
-                          604,48
-                        "
-                        className="confidence-line"
-                      />
-
-                      {/* CONFIDENCE POINTS */}
-
-                      <circle
-                        cx="124"
-                        cy="54"
-                        r="5"
-                        className="confidence-point"
-                      />
-
-                      <circle
-                        cx="284"
-                        cy="65"
-                        r="5"
-                        className="confidence-point"
-                      />
-
-                      <circle
-                        cx="444"
-                        cy="43"
-                        r="5"
-                        className="confidence-point"
-                      />
-
-                      <circle
-                        cx="604"
-                        cy="48"
-                        r="5"
-                        className="confidence-point"
-                      />
-
-                      {/* X AXIS */}
-
-                      <text
-                        x="124"
-                        y="315"
-                        textAnchor="middle"
-                        className="chart-x-label"
-                      >
-                        Leaf Color
-                      </text>
-
-                      <text
-                        x="284"
-                        y="315"
-                        textAnchor="middle"
-                        className="chart-x-label"
-                      >
-                        Surface
-                      </text>
-
-                      <text
-                        x="444"
-                        y="315"
-                        textAnchor="middle"
-                        className="chart-x-label"
-                      >
-                        Leaf Edge
-                      </text>
-
-                      <text
-                        x="604"
-                        y="315"
-                        textAnchor="middle"
-                        className="chart-x-label"
-                      >
-                        Structure
-                      </text>
-
-                    </svg>
+                    </ResponsiveContainer>
 
                   </div>
 
@@ -1248,9 +1073,9 @@ function App() {
 
               </div>
 
-              {/* ========================================= */}
+              {/* ========================= */}
               {/* DECISION SUPPORT */}
-              {/* ========================================= */}
+              {/* ========================= */}
 
               <div className="explain-card decision-card">
 
@@ -1274,8 +1099,6 @@ function App() {
 
                 </div>
 
-                {/* RECOMMENDATION */}
-
                 <div className="recommendation">
 
                   <div className="recommendation-icon">
@@ -1298,15 +1121,11 @@ function App() {
 
                 </div>
 
-                {/* ACTION STEPS */}
-
                 <div className="decision-items">
 
                   <div className="decision-item">
 
-                    <span>
-                      01
-                    </span>
+                    <span>01</span>
 
                     <p>
                       Inspect nearby leaves for similar symptoms.
@@ -1316,9 +1135,7 @@ function App() {
 
                   <div className="decision-item">
 
-                    <span>
-                      02
-                    </span>
+                    <span>02</span>
 
                     <p>
                       Monitor the affected area over the next few days.
@@ -1328,9 +1145,7 @@ function App() {
 
                   <div className="decision-item">
 
-                    <span>
-                      03
-                    </span>
+                    <span>03</span>
 
                     <p>
                       Re-scan if discoloration or severity increases.
@@ -1339,8 +1154,6 @@ function App() {
                   </div>
 
                 </div>
-
-                {/* CONFIDENCE */}
 
                 <div className="confidence-box">
 
@@ -1373,7 +1186,7 @@ function App() {
         )}
 
         {/* ================================================= */}
-        {/* STEP 04 — STATISTICAL REPORT */}
+        {/* STATISTICAL REPORT */}
         {/* ================================================= */}
 
         {analysis && (
@@ -1397,8 +1210,6 @@ function App() {
               </p>
 
             </div>
-
-            {/* STATISTICS CARDS */}
 
             <div className="statistics-grid">
 
@@ -1483,11 +1294,8 @@ function App() {
                 </h3>
 
                 <p>
-                  The AI analysis indicates early signs of
-                  crop stress. The current risk level is{" "}
-                  {analysis.risk}% with an estimated severity
-                  of {analysis.severity}%. Overall crop health
-                  is estimated at {analysis.health}%.
+                  {analysis.summary ||
+                    `The AI analysis indicates early signs of crop stress. The current risk level is ${analysis.risk}% with an estimated severity of ${analysis.severity}%. Overall crop health is estimated at ${analysis.health}%.`}
                 </p>
 
               </div>
